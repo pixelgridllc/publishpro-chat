@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chat widget preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&family=Marcellus&display=swap">
+<style>
+  :root { color-scheme: light; }
+  body { margin: 0; background: #fefaf3; color: #2f2c25; font-family: Manrope, system-ui, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 72px 20px 160px; }
+  h1 { font-family: Marcellus, Georgia, serif; font-weight: 400; font-size: clamp(32px, 6vw, 48px); line-height: 1.1; margin: 0 0 16px; }
+  p { color: rgba(47,44,37,.75); line-height: 1.6; }
+  code { background: #f1eadd; padding: 2px 6px; border-radius: 6px; font-size: 14px; }
+  .note { margin-top: 32px; padding: 16px 18px; border: 1px solid rgba(47,44,37,.12); border-radius: 12px; background: #fff; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Local preview of the publishing chat</h1>
+  <p>This page only hosts the widget for local testing. On the live site the same script is added to every page with one tag:</p>
+  <p><code>&lt;script src="https://YOUR-CHAT-HOST/widget.js" defer&gt;&lt;/script&gt;</code></p>
+  <div class="note">
+    <p style="margin:0">Use the button in the bottom-right corner to open the chat. Conversations persist across page navigation in the same tab and reset when the tab closes.</p>
+  </div>
+</main>
+<script src="/widget.js" defer></script>
+</body>
+</html>

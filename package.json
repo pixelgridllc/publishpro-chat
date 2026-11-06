@@ -1,0 +1,23 @@
+{
+  "name": "publishpro-chat",
+  "version": "1.0.0",
+  "description": "PublishPro conversational publishing assistant: embeddable widget + streaming chat API",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test \"test/unit/*.test.js\"",
+    "test:e2e": "node --test --test-concurrency=1 --test-timeout=60000 \"test/e2e/*.test.js\"",
+    "test:all": "npm test && npm run test:e2e",
+    "eval": "node scripts/eval.js",
+    "check:knowledge": "node scripts/check-knowledge.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.6.0"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  }
+}
