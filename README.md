@@ -29,6 +29,8 @@ node --env-file=.env src/server.js
 
 Open http://localhost:8787 for a local preview page.
 
+No API key yet? Run `DEMO_MODE=true npm start` for a preview with scripted answers (written from the knowledge base). Everything else is the real widget and server. Never enable demo mode in production.
+
 ## Add it to publishpro.app (Framer)
 
 Deploy the service (below), then in Framer go to **Site Settings → General → Custom Code → End of `<body>` tag** and add:

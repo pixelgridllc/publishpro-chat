@@ -17,6 +17,7 @@ import { loadKnowledge } from './knowledge.js';
 import { loadPromptParts, buildStableSystem } from './prompt.js';
 import { runChatTurn, RequestError } from './chat.js';
 import { validateHandoff, deliverHandoff } from './handoff.js';
+import { createDemoClient } from './demo.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.resolve(here, '..', 'public');
@@ -69,7 +70,8 @@ function isLocalOrigin(origin) {
 }
 
 export function createApp({ config = loadConfig(), client, kb = loadKnowledge(), promptParts = loadPromptParts(), logger = console } = {}) {
-  const anthropic = client || new Anthropic({ maxRetries: 2, timeout: 60_000 });
+  const demo = !client && process.env.DEMO_MODE === 'true';
+  const anthropic = client || (demo ? createDemoClient() : new Anthropic({ maxRetries: 2, timeout: 60_000 }));
   const stableSystem = buildStableSystem(promptParts, kb);
   const allow = createRateLimiter({ perMinute: config.rateLimitPerMinute, perDay: config.rateLimitPerDay });
   const widgetPath = path.join(PUBLIC_DIR, 'widget.js');
@@ -152,7 +154,7 @@ export function createApp({ config = loadConfig(), client, kb = loadKnowledge(),
 
       if (req.method === 'POST' && url.pathname === '/api/chat') return await handleChat(req, res);
       if (req.method === 'POST' && url.pathname === '/api/handoff') return await handleHandoff(req, res);
-      if (req.method === 'GET' && url.pathname === '/api/health') return json(res, 200, { ok: true, model: config.model, chunks: kb.chunks.length });
+      if (req.method === 'GET' && url.pathname === '/api/health') return json(res, 200, { ok: true, model: demo ? 'demo (scripted answers)' : config.model, demo, chunks: kb.chunks.length });
       if (req.method === 'GET' && url.pathname === '/widget.js') {
         res.writeHead(200, { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'public, max-age=300' });
         return fs.createReadStream(widgetPath).pipe(res);
@@ -174,7 +176,8 @@ export function createApp({ config = loadConfig(), client, kb = loadKnowledge(),
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
   const config = loadConfig();
-  if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
+  if (process.env.DEMO_MODE === 'true') console.warn('DEMO_MODE: scripted answers, no model calls. Do not use in production.');
+  else if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
     console.warn('Warning: ANTHROPIC_API_KEY is not set; chat requests will fail until it is.');
   }
   const server = http.createServer(createApp({ config }));
