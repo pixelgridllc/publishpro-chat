@@ -80,7 +80,12 @@ export function describeError(err) {
   if (err instanceof Anthropic.APIUserAbortError) return { code: 'aborted', retryable: false, message: 'Stopped.' };
   if (err instanceof Anthropic.RateLimitError)
     return { code: 'busy', retryable: true, message: "We're a little busy right now. Give it a few seconds and try again." };
-  if (err instanceof Anthropic.AuthenticationError || err instanceof Anthropic.PermissionDeniedError)
+  if (
+    err instanceof Anthropic.AuthenticationError ||
+    err instanceof Anthropic.PermissionDeniedError ||
+    // No key configured at all: the SDK throws before sending anything.
+    /resolve authentication method/i.test(err?.message || '')
+  )
     return { code: 'config', retryable: false, message: "Chat isn't available right now. You can reach the team at support@publishpro.app." };
   if (err instanceof Anthropic.BadRequestError)
     return { code: 'bad_request', retryable: false, message: "Something went wrong with that message. Try starting a new conversation." };

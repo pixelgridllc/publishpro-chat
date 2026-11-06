@@ -178,7 +178,12 @@ if (isMain) {
   const config = loadConfig();
   if (process.env.DEMO_MODE === 'true') console.warn('DEMO_MODE: scripted answers, no model calls. Do not use in production.');
   else if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
-    console.warn('Warning: ANTHROPIC_API_KEY is not set; chat requests will fail until it is.');
+    console.warn(
+      'Warning: ANTHROPIC_API_KEY is not set, so chat replies will fail.\n' +
+        '  Fix: put your key in .env as ANTHROPIC_API_KEY=sk-ant-... (no spaces or quotes), save, and restart with:\n' +
+        '       node --env-file=.env src/server.js\n' +
+        '  Or preview without a key: set DEMO_MODE=true',
+    );
   }
   const server = http.createServer(createApp({ config }));
   server.listen(config.port, () => console.log(`PublishPro chat listening on http://localhost:${config.port}`));

@@ -169,6 +169,10 @@ test('describeError: typed SDK errors map to safe visitor messages', () => {
   assert.equal(describeError(auth).retryable, false);
   assert.doesNotMatch(describeError(auth).message, /api key|anthropic|model/i);
   assert.equal(describeError(new Anthropic.APIConnectionError({ message: 'x' })).code, 'unavailable');
+  // Missing key: the SDK throws before any request; visitors shouldn't be told to retry.
+  const noKey = describeError(new Error('Could not resolve authentication method. Expected one of apiKey, authToken, ...'));
+  assert.equal(noKey.code, 'config');
+  assert.equal(noKey.retryable, false);
 });
 
 test('handoff: validation and delivery only report success on a 2xx webhook', async () => {
